@@ -7,8 +7,6 @@ on:
 permissions:
   contents: read
   packages: write
-  pages: write
-  id-token: write
 concurrency:
   group: novi-store-publish
   cancel-in-progress: false
@@ -53,14 +51,12 @@ jobs:
       - run: python scripts/prepare-github.py "$GITHUB_REPOSITORY"
       - name: Require publicly installable image
         run: python scripts/verify-public-image.py "$GITHUB_REPOSITORY"
-      - uses: actions/configure-pages@v5
-        id: pages
       - name: Build ZimaOS store v2
         uses: IceWhaleTech/build-appstore-action@v1.1.2
         with:
           source: .
           output: dist
-          base-url: ${{ steps.pages.outputs.base_url }}
+          base-url: https://cdn.jsdelivr.net/gh/${{ github.repository }}@gh-pages
           report-json: out/store-build-report.json
       - run: python scripts/check-store-output.py dist
       - name: Build legacy store archive
@@ -72,15 +68,30 @@ jobs:
         with:
           name: store-build-report
           path: out/store-build-report.json
-      - uses: actions/upload-pages-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
+          name: novi-appstore-dist
           path: dist
+          include-hidden-files: true
   deploy-store:
     needs: build-store
     runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+    permissions:
+      contents: write
     steps:
-      - uses: actions/deploy-pages@v4
-        id: deployment
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: novi-appstore-dist
+          path: dist
+      - name: Publish catalog branch
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: dist
+          publish_branch: gh-pages
+      - name: Store address
+        run: |
+          echo "### ZimaOS store" >> "$GITHUB_STEP_SUMMARY"
+          echo "https://cdn.jsdelivr.net/gh/${GITHUB_REPOSITORY}@gh-pages/" >> "$GITHUB_STEP_SUMMARY"
+          echo "Legacy ZIP: https://cdn.jsdelivr.net/gh/${GITHUB_REPOSITORY}@gh-pages/store/main.zip" >> "$GITHUB_STEP_SUMMARY"

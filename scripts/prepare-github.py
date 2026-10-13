@@ -36,5 +36,5 @@ config["url"] = f"https://github.com/{args.repository}"
 config_path.write_text(json.dumps(config, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
 print(target)
 print(f"Import URL: https://raw.githubusercontent.com/{args.repository}/main/Apps/NoviFlowOSAssistant/docker-compose.yml")
-print(f"Store v2 URL: https://{owner.lower()}.github.io/{repo}/")
-print(f"Store v1 URL: https://{owner.lower()}.github.io/{repo}/store/main.zip")
+print(f"Store v2 URL: https://cdn.jsdelivr.net/gh/{args.repository}@gh-pages/")
+print(f"Store v1 URL: https://cdn.jsdelivr.net/gh/{args.repository}@gh-pages/store/main.zip")

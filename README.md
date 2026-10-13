@@ -59,7 +59,7 @@ Możesz też ustawić `OLLAMA_URL` na istniejący lokalny serwer w LAN. Ta wersj
 
 ## GitHub i instalacja w ZimaOS
 
-**Chcesz aplikację widoczną po dodaniu sklepu do ZimaOS? Przeczytaj [APPSTORE.md](APPSTORE.md).** Repozytorium ma teraz pełną konfigurację własnego sklepu oraz workflow publikacji GitHub Pages. Poniższa instrukcja dotyczy dodatkowej możliwości ręcznego importu Compose.
+**Chcesz aplikację widoczną po dodaniu sklepu do ZimaOS? Przeczytaj [APPSTORE.md](APPSTORE.md).** Repozytorium ma pełną konfigurację własnego sklepu i publikuje katalog na gałęzi `gh-pages`, udostępnianej przez jsDelivr. Poniższa instrukcja dotyczy dodatkowej możliwości ręcznego importu Compose.
 
 1. Utwórz publiczne repozytorium i wrzuć **zawartość tego katalogu** (nie całe lokalne źródła projektu).
 2. Przed wrzuceniem wygeneruj plik importu dla swojego repozytorium:
