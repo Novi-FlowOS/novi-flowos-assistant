@@ -1,0 +1,14 @@
+{
+  "version": 2,
+  "store_id": "novi-novi-flowos-novi-flowos-assistant",
+  "name": {
+    "en_US": "Novi Apps",
+    "pl_PL": "Novi Apps"
+  },
+  "description": {
+    "en_US": "Novi tools for FlowOS and ZimaOS.",
+    "pl_PL": "Narzędzia Novi do FlowOS i ZimaOS."
+  },
+  "maintainer": "Novi-FlowOS",
+  "url": "https://github.com/Novi-FlowOS/novi-flowos-assistant"
+}

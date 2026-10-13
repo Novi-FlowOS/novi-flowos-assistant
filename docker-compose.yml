@@ -1,0 +1,91 @@
+name: novi-flowos-assistant
+services:
+  assistant:
+    build: .
+    image: novi-flowos-assistant:local
+    container_name: novi-flowos-assistant
+    restart: unless-stopped
+    ports:
+      - "48103:8080"
+    environment:
+      OLLAMA_URL: http://ollama:11434
+      OLLAMA_MODEL: qwen3:0.6b
+    volumes:
+      - type: bind
+        source: /DATA/AppData/novi-flowos-assistant
+        target: /state
+      - type: bind
+        source: /DATA/FlowOS
+        target: /reference/system
+        read_only: true
+      - type: bind
+        source: /media/Storage Shared/FlowOS
+        target: /reference/ssd
+        read_only: true
+      - type: bind
+        source: /media/Storage Shared/Novi CDN
+        target: /reference/cdn
+        read_only: true
+    read_only: true
+    tmpfs:
+      - /tmp:size=16m
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    mem_limit: 192m
+    cpus: 0.5
+  ollama:
+    image: ollama/ollama:latest
+    container_name: novi-flowos-ai
+    profiles:
+      - ai
+    restart: unless-stopped
+    environment:
+      OLLAMA_HOST: 0.0.0.0:11434
+      OLLAMA_NUM_PARALLEL: "1"
+      OLLAMA_MAX_LOADED_MODELS: "1"
+    volumes:
+      - /DATA/AppData/novi-flowos-ai:/root/.ollama
+    mem_limit: 2g
+    cpus: 2
+  model-init:
+    image: ollama/ollama:latest
+    profiles:
+      - ai
+    depends_on:
+      - ollama
+    restart: "no"
+    environment:
+      OLLAMA_HOST: http://ollama:11434
+    entrypoint: /bin/sh
+    command:
+      - -c
+      - until ollama list >/dev/null 2>&1; do sleep 2; done; ollama pull qwen3:0.6b
+x-casaos:
+  id: pl.org.novi.flowos-assistant
+  main: assistant
+  index: /
+  port_map: "48103"
+  scheme: http
+  icon: https://raw.githubusercontent.com/YOUR_GITHUB_USER/YOUR_REPO/main/app/web/icon.svg
+  title:
+    en_US: Novi FlowOS Assistant
+    pl_PL: Novi FlowOS Assistant
+  tagline:
+    en_US: Device source research and AI build-log diagnosis
+    pl_PL: Źródła urządzeń i diagnoza błędów przez lokalne AI
+  description:
+    en_US: Read-only assistant. Verifies public device branches and diagnoses logs using optional local Ollama. Does not build, edit or flash devices.
+    pl_PL: Asystent tylko do odczytu. Sprawdza źródła urządzeń i analizuje logi przez opcjonalne lokalne Ollama. Nie zmienia buildu ani telefonu.
+  author: Novi
+  developer: Novi
+  category: Developer
+  architectures:
+    - amd64
+    - arm64
+  version: "0.1.0"
+  tips:
+    before_install:
+      en_US: Existing folders are read-only. AI profile is optional; 2 GB RAM limit. Access key is saved in /DATA/AppData/novi-flowos-assistant/access-key.
+      pl_PL: Istniejące foldery są tylko do odczytu. AI jest opcjonalne, limit 2 GB RAM. Klucz panelu znajdziesz w /DATA/AppData/novi-flowos-assistant/access-key.

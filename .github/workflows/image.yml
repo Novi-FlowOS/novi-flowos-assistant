@@ -1,0 +1,86 @@
+name: Publish Novi application and ZimaOS store
+on:
+  push:
+    branches: [main]
+    tags: ['v*']
+  workflow_dispatch:
+permissions:
+  contents: read
+  packages: write
+  pages: write
+  id-token: write
+concurrency:
+  group: novi-store-publish
+  cancel-in-progress: false
+jobs:
+  test-and-build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m unittest discover -s tests -v
+      - run: python scripts/prepare-github.py "$GITHUB_REPOSITORY"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: zimaos-import
+          path: Apps/NoviFlowOSAssistant/docker-compose.yml
+      - uses: docker/setup-qemu-action@v3
+      - uses: docker/setup-buildx-action@v3
+      - uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Image name
+        id: image
+        run: echo "name=ghcr.io/${GITHUB_REPOSITORY,,}" >> "$GITHUB_OUTPUT"
+      - uses: docker/build-push-action@v6
+        with:
+          context: .
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: ${{ steps.image.outputs.name }}:latest,${{ steps.image.outputs.name }}:${{ github.sha }}
+  build-store:
+    needs: test-and-build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python scripts/prepare-github.py "$GITHUB_REPOSITORY"
+      - name: Require publicly installable image
+        run: python scripts/verify-public-image.py "$GITHUB_REPOSITORY"
+      - uses: actions/configure-pages@v5
+        id: pages
+      - name: Build ZimaOS store v2
+        uses: IceWhaleTech/build-appstore-action@v1.1.2
+        with:
+          source: .
+          output: dist
+          base-url: ${{ steps.pages.outputs.base_url }}
+          report-json: out/store-build-report.json
+      - run: python scripts/check-store-output.py dist
+      - name: Build legacy store archive
+        run: python scripts/build-legacy-store.py --output dist/store/main.zip
+      - name: No GitHub Pages processing
+        run: touch dist/.nojekyll
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: store-build-report
+          path: out/store-build-report.json
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+  deploy-store:
+    needs: build-store
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/deploy-pages@v4
+        id: deployment

@@ -1,0 +1,11 @@
+__pycache__/
+*.pyc
+.env
+state/
+*.zip
+*.apk
+screenshots-local/
+.store-tools/
+dist/
+out/
+.cache/
