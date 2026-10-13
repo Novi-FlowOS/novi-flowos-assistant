@@ -1,0 +1,2 @@
+ghcr.io/novi-flowos/novi-flowos-assistant:latest sha256:23845adfacfb1c5c46f33d361ac74c39d18b56b2750a5f075e08f6eb9bea0a2f
+ollama/ollama:latest sha256:44833c52df2a164cc1238a96ce100123c8e54082b85c5e235a9cb5a7adc55f27

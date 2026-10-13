@@ -1,0 +1,27 @@
+{
+  "tagline": "Device source research and AI build-log diagnosis",
+  "description": "Read-only assistant. Verifies public device branches and diagnoses logs using optional local Ollama. Does not build, edit or flash devices.",
+  "author": "Novi",
+  "developer": "Novi",
+  "category": "Developer",
+  "architectures": [
+    "amd64",
+    "arm64"
+  ],
+  "repo": "https://github.com/Novi-FlowOS/novi-flowos-assistant",
+  "tips": {
+    "before_install": "Existing folders are read-only. Local AI downloads its model on first installation; 2 GB RAM limit. Access key is saved in /DATA/AppData/novi-flowos-assistant/access-key."
+  },
+  "title": "Novi FlowOS Assistant",
+  "base_url": "https://cdn.jsdelivr.net/gh/Novi-FlowOS/novi-flowos-assistant@gh-pages",
+  "id": "pl.org.novi.flowos-assistant",
+  "version": "0.1.0",
+  "categories": [
+    "developer"
+  ],
+  "min_memory": 0,
+  "min_image_size": {
+    "amd64": 3822737839,
+    "arm64": 2849237539
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "version": 2,
+  "updated_at": "2026-10-13T22:38:58Z",
+  "app_count": 1,
+  "base_url": "https://cdn.jsdelivr.net/gh/Novi-FlowOS/novi-flowos-assistant@gh-pages",
+  "apps": [
+    {
+      "id": "pl.org.novi.flowos-assistant",
+      "title": "Novi FlowOS Assistant",
+      "tagline": "Device source research and AI build-log diagnosis",
+      "category": "Developer",
+      "categories": [
+        "developer"
+      ],
+      "author": "Novi",
+      "developer": "Novi",
+      "architectures": [
+        "amd64",
+        "arm64"
+      ],
+      "icon": "/apps/pl.org.novi.flowos-assistant/assets/icon.svg",
+      "thumbnail": "",
+      "compose_url": "/apps/pl.org.novi.flowos-assistant/docker-compose.yml",
+      "meta_url": "/apps/pl.org.novi.flowos-assistant/meta.json",
+      "content_hash": "38cbd257",
+      "version": "0.1.0"
+    }
+  ]
+}

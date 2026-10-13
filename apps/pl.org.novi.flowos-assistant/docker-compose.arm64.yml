@@ -1,0 +1,77 @@
+name: novi-flowos-assistant
+services:
+  assistant:
+    image: ghcr.io/novi-flowos/novi-flowos-assistant:latest@sha256:189b28ca83cc516c91c7276b007dc6968c5e92ccb5f505d7c090b2d5a4f1df62
+    container_name: novi-flowos-assistant
+    restart: unless-stopped
+    ports:
+      - "48103:8080"
+    environment:
+      OLLAMA_URL: http://ollama:11434
+      OLLAMA_MODEL: qwen3:0.6b
+      PANEL_ACCESS_KEY: ""
+    volumes:
+      - type: bind
+        source: /DATA/AppData/novi-flowos-assistant
+        target: /state
+      - type: bind
+        source: /DATA/FlowOS
+        target: /reference/system
+        read_only: true
+        bind:
+          create_host_path: true
+      - type: bind
+        source: /media/Storage Shared/FlowOS
+        target: /reference/ssd
+        read_only: true
+        bind:
+          create_host_path: true
+      - type: bind
+        source: /media/Storage Shared/Novi CDN
+        target: /reference/cdn
+        read_only: true
+        bind:
+          create_host_path: true
+    read_only: true
+    tmpfs:
+      - /tmp:size=16m
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    mem_limit: 192m
+    cpus: 0.5
+  ollama:
+    image: ollama/ollama:latest@sha256:56587518b22609f472d56847251d1453a2796aea8a1cb84b7ce22ff9adad77ce
+    container_name: novi-flowos-ai
+    restart: unless-stopped
+    environment:
+      OLLAMA_HOST: 0.0.0.0:11434
+      OLLAMA_NUM_PARALLEL: "1"
+      OLLAMA_MAX_LOADED_MODELS: "1"
+    volumes:
+      - /DATA/AppData/novi-flowos-ai:/root/.ollama
+    mem_limit: 2g
+    cpus: 2
+  model-init:
+    image: ollama/ollama:latest@sha256:56587518b22609f472d56847251d1453a2796aea8a1cb84b7ce22ff9adad77ce
+    depends_on:
+      - ollama
+    restart: "no"
+    environment:
+      OLLAMA_HOST: http://ollama:11434
+    entrypoint: /bin/sh
+    command:
+      - -c
+      - until ollama list >/dev/null 2>&1; do sleep 2; done; ollama pull qwen3:0.6b
+x-casaos:
+  id: pl.org.novi.flowos-assistant
+  main: assistant
+  index: /
+  port_map: "48103"
+  scheme: http
+  icon: https://cdn.jsdelivr.net/gh/Novi-FlowOS/novi-flowos-assistant@gh-pages/apps/pl.org.novi.flowos-assistant/assets/icon.svg
+  title:
+    en_US: Novi FlowOS Assistant
+    pl_PL: Novi FlowOS Assistant
+  version: "0.1.0"

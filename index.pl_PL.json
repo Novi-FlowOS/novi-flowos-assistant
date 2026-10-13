@@ -1,0 +1,9 @@
+{
+  "apps": [
+    {
+      "id": "pl.org.novi.flowos-assistant",
+      "tagline": "Źródła urządzeń i diagnoza błędów przez lokalne AI",
+      "title": "Novi FlowOS Assistant"
+    }
+  ]
+}

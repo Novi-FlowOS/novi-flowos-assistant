@@ -1,0 +1,9 @@
+{
+  "id": "pl.org.novi.flowos-assistant",
+  "title": "Novi FlowOS Assistant",
+  "tagline": "Źródła urządzeń i diagnoza błędów przez lokalne AI",
+  "description": "Asystent tylko do odczytu. Sprawdza źródła urządzeń i analizuje logi przez opcjonalne lokalne Ollama. Nie zmienia buildu ani telefonu.",
+  "tips": {
+    "before_install": "Istniejące foldery są tylko do odczytu. Model AI pobiera się przy pierwszej instalacji, limit 2 GB RAM. Klucz panelu znajdziesz w /DATA/AppData/novi-flowos-assistant/access-key."
+  }
+}
